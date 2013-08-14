@@ -337,6 +337,8 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
     private static int numberOfHandlers = 0;
 
     private synchronized void startHandler(TwitterStreamConsumer handler) {
+        if(handler != null)
+            logger.warn("handler!=null, closing old handler");
         cleanUp();
         this.handler = handler;
         this.handler.start();
@@ -350,6 +352,7 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
     public synchronized void cleanUp() {
         if (handler != null) {
             handler.close();
+            handler = null;
             numberOfHandlers--;
         }
     }

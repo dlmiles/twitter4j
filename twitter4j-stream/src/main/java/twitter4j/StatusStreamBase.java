@@ -193,6 +193,7 @@ abstract class StatusStreamBase implements StatusStream {
                 is.close();
             } catch (IOException ignore) {
             }
+            is = null;
             boolean isUnexpectedException = streamAlive;
             streamAlive = false;
             if (isUnexpectedException) {
@@ -303,10 +304,23 @@ abstract class StatusStreamBase implements StatusStream {
 
     public void close() throws IOException {
         streamAlive = false;
-        is.close();
-        br.close();
+        if(is != null) {
+            try {
+                is.close();
+            } catch(IOException eat) {
+            }
+            is = null;
+        }
+        if(br != null) {
+            try {
+                br.close();
+            } catch(IOException eat) {
+            }
+            br = null;
+        }
         if (response != null) {
             response.disconnect();
+            response = null;
         }
     }
 
